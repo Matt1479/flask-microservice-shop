@@ -90,5 +90,20 @@ def add_product():
     return jsonify({"message": "Product added successfully"}), 200
 
 
+@app.route("/api/shop/products/update", methods=["PUT"])
+def update_product():
+    data = request.get_json(silent=True)
+    if data is None:
+        return jsonify({"error": "Invalid or missing JSON body"}), 400
+    
+    if not validate_int(data["id"]):
+        return jsonify({"error": "id must be a real number"}), 400
+
+    for product in PRODUCTS:
+        if product["id"] == data["id"]:
+            product.update(data)
+    return jsonify({"message": "Product updated successfully"}), 200
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=port)
