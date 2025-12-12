@@ -33,3 +33,14 @@ microservices/
  ├── gateway/        # API Gateway
  └── client/         # Client application
 ```
+
+## Ports
+
+```json
+{
+    "gateway":      5000,
+    "auth-service": 5001,
+    "crud-service": 5002,
+    "logs-service": 5003
+}
+```
