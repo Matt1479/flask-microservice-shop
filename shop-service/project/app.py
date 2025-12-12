@@ -1,6 +1,6 @@
-import utils
 import os
 from flask import Flask, jsonify, request
+from project import utils
 from typing import Any
 
 
@@ -22,10 +22,9 @@ def get_products():
 
 @app.route("/api/shop/products/<id>", methods=["GET"])
 def get_product(id: int):
-    try:
-        id = int(id)
-    except ValueError:
-        return jsonify({"error": "id must be an integer."}), 400
+    if not utils.validate_int(id):
+        return jsonify({"error": "id must be an integer"}), 400
+    id = int(id)
 
     for product in PRODUCTS:
         if product.get("id") == id:
@@ -61,10 +60,9 @@ def add_product():
 
 @app.route("/api/shop/products/delete/<id>", methods=["DELETE"])
 def delete_product(id: int):
-    try:
-        id = int(id)
-    except ValueError:
-        return jsonify({"error": "id must be an integer."}), 400
+    if not utils.validate_int(id):
+        return jsonify({"error": "id must be an integer"}), 400
+    id = int(id)
 
     for product in PRODUCTS:
         if product.get("id") == id:
