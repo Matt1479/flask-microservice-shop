@@ -105,5 +105,19 @@ def update_product():
     return jsonify({"message": "Product updated successfully"}), 200
 
 
+@app.route("/api/shop/products/delete/<id>", methods=["DELETE"])
+def delete_product(id: int):
+    try:
+        id = int(id)
+    except ValueError:
+        return jsonify({"error": "id must be an integer."}), 400
+
+    for product in PRODUCTS:
+        if product.get("id") == id:
+            PRODUCTS.remove(product)
+            return jsonify({"message": "Product deleted successfully"}), 200
+    return jsonify({"error": f"Product of id {id} is not found."}), 404
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=port)
