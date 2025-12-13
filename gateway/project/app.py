@@ -61,14 +61,14 @@ def gateway(path: str):
         forward_headers = dict(request.headers)
 
         # Strip spoofable headers
-        for h in ["x_user_id", "x_user_role"]:
+        for h in ["X-User-Id", "X-User-Role"]:
             forward_headers.pop(h, None)
         
         # Inject trusted identity headers
         if hasattr(g, "user_id"):
-            forward_headers["x_user_id"] = g.user_id
+            forward_headers["X-User-Id"] = g.user_id
         if hasattr(g, "user_role"):
-            forward_headers["x_user_role"] = g.user_role
+            forward_headers["X-User-Role"] = g.user_role
 
         upstream = requests.request(
             method=request.method,
@@ -90,4 +90,4 @@ def gateway(path: str):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0", port=port)
