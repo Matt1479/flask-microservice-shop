@@ -5,7 +5,7 @@ import os
 
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = os.urandom(24)
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
 port = int(os.environ.get("PORT", 5001))
 
