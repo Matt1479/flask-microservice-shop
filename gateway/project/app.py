@@ -9,9 +9,9 @@ app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 port = int(os.environ.get("PORT", 5000))
 
 SERVICE_ROUTES = {
-    "/api/auth": "http://localhost:5001",
-    "/api/shop": "http://localhost:5002",
-    "/api/logs": "http://localhost:5003"
+    "/api/auth": "http://auth-service:5001",
+    "/api/shop": "http://shop-service:5002",
+    "/api/logs": "http://logs-service:5003"
 }
 PUBLIC_ROUTES = [
     "/api/auth"
