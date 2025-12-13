@@ -33,6 +33,7 @@ def get_product(id: int):
 
 
 @app.route("/api/shop/products/add", methods=["POST"])
+@utils.user_id_admin_role_required
 def add_product():
     data = request.get_json(silent=True)
     if data is None:
@@ -59,6 +60,7 @@ def add_product():
 
 
 @app.route("/api/shop/products/delete/<id>", methods=["DELETE"])
+@utils.user_id_admin_role_required
 def delete_product(id: int):
     if not utils.validate_int(id):
         return jsonify({"error": "id must be an integer"}), 400
@@ -72,6 +74,7 @@ def delete_product(id: int):
 
 
 @app.route("/api/shop/products/update", methods=["PUT"])
+@utils.user_id_admin_role_required
 def update_product():
     data = request.get_json(silent=True)
     if data is None:
