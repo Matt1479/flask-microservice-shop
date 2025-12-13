@@ -1,7 +1,7 @@
 import jwt
 import os
 import requests
-from flask import Flask, jsonify, make_response, request
+from flask import Flask, g, jsonify, make_response, request
 
 
 app = Flask(__name__)
@@ -13,19 +13,28 @@ SERVICE_ROUTES = {
     "/api/shop": "http://localhost:5002",
     "/api/logs": "http://localhost:5003"
 }
+PUBLIC_ROUTES = [
+    "/api/auth"
+]
 
 
 @app.before_request
 def check_auth():
+    # Skip token check for public routes
+    if any(request.path.startswith(p) for p in PUBLIC_ROUTES):
+        return
+
     token = request.cookies.get("token")
     if not token:
         return jsonify({"error": "Authorization token is missing"}), 401
     
     try:
         data = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
-        user_id = data["user_id"]
     except jwt.exceptions.DecodeError:
         return jsonify({"error": "Authorization token is invalid"}), 401
+    
+    g.user_id = str(data.get("user_id"))
+    g.user_role = data.get("user_role")
 
 
 @app.route("/")
@@ -49,10 +58,22 @@ def gateway(path: str):
     
     # Forward request
     try:
+        forward_headers = dict(request.headers)
+
+        # Strip spoofable headers
+        for h in ["x_user_id", "x_user_role"]:
+            forward_headers.pop(h, None)
+        
+        # Inject trusted identity headers
+        if hasattr(g, "user_id"):
+            forward_headers["x_user_id"] = g.user_id
+        if hasattr(g, "user_role"):
+            forward_headers["x_user_role"] = g.user_role
+
         upstream = requests.request(
             method=request.method,
             url=service_url,
-            headers=dict(request.headers),
+            headers=forward_headers,
             params=dict(request.args),
             json=request.get_json(silent=True),
             timeout=1
