@@ -1,9 +1,11 @@
+import jwt
 import os
 import requests
 from flask import Flask, jsonify, make_response, request
 
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = os.urandom(24)
 port = int(os.environ.get("PORT", 5000))
 
 SERVICE_ROUTES = {
@@ -11,6 +13,19 @@ SERVICE_ROUTES = {
     "/api/shop": "http://localhost:5002",
     "/api/logs": "http://localhost:5003"
 }
+
+
+@app.before_request
+def check_auth():
+    token = request.cookies.get("token")
+    if not token:
+        return jsonify({"error": "Authorization token is missing"}), 401
+    
+    try:
+        data = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
+        user_id = data["user_id"]
+    except jwt.exceptions.DecodeError:
+        return jsonify({"error": "Authorization token is invalid"}), 401
 
 
 @app.route("/")
