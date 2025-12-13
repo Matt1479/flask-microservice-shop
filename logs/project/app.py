@@ -15,7 +15,7 @@ LOGS: list[dict[str, Any]] = []
 def logs():
     try:
         user_id = utils.require_user_id()
-        user_role = utils.require_admin_role()
+        utils.require_admin_role()
     except Exception as e:
         return jsonify({"error": e.args[0]}), e.args[1]
 
@@ -30,7 +30,6 @@ def logs():
         data["id"] = max([log["id"] for log in LOGS]) + 1 if LOGS else 1
         data["timestamp"] = datetime.now()
         data["user_id"] = int(user_id)
-        data["role"] = user_role
         LOGS.append(data)
         return jsonify({"message": "Log added successfully"}), 200
     else:
