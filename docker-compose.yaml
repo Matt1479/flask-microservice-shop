@@ -4,28 +4,28 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      - auth-service
-      - shop-service
-      - logs-service
+      - auth
+      - shop
+      - logs
     environment:
       - SECRET_KEY=${SECRET_KEY}
     networks:
       - internal
   
-  auth-service:
-    build: ./auth-service
+  auth:
+    build: ./auth
     environment:
       - SECRET_KEY=${SECRET_KEY}
     networks:
       - internal
   
-  shop-service:
-    build: ./shop-service
+  shop:
+    build: ./shop
     networks:
       - internal
   
-  logs-service:
-    build: ./logs-service
+  logs:
+    build: ./logs
     networks:
       - internal
 
