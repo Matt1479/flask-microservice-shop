@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 from flask import Flask, jsonify, request
+from project import utils
 from typing import Any
 
 
@@ -12,16 +13,11 @@ LOGS: list[dict[str, Any]] = []
 
 @app.route("/api/logs", methods=["GET", "POST"])
 def logs():
-    user_id = request.headers.get("X-User-Id")
-    user_role = request.headers.get("X-User-Role")
-
-    if not user_id or not user_role:
-        return jsonify({"error": "user id and/or role is required"}), 401
-
-    if user_role != "admin":
-        return jsonify(
-            {"error": "You have insufficient rights to access this resource"}
-        ), 403
+    try:
+        user_id = utils.require_user_id()
+        user_role = utils.require_admin_role()
+    except Exception as e:
+        return jsonify({"error": e.args[0]}), e.args[1]
 
     if request.method == "POST":
         data = request.get_json(silent=True)
