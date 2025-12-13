@@ -1,7 +1,7 @@
 import os
+import utils
 from datetime import datetime
 from flask import Flask, jsonify, request
-from project import utils
 from typing import Any
 
 
