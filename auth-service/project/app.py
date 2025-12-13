@@ -31,7 +31,11 @@ def login():
     password = data.get("password")
     for user in users:
         if user["username"] == username and user["password"] == password:
-            token = jwt.encode({"user_id": user["id"]}, app.config["SECRET_KEY"], algorithm="HS256")
+            token = jwt.encode(
+                {"user_id": user["id"], "user_role": user["role"]},
+                app.config["SECRET_KEY"],
+                algorithm="HS256",
+            )
             response = make_response(jsonify({"message": "Authentication successful"}))
             response.set_cookie("token", token)
             return response, 200

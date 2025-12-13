@@ -2,6 +2,13 @@
     {
         "id": 1,
         "username": "admin",
-        "password": "SuperSecretPassword"
+        "password": "SuperSecretAdminPassword",
+        "role": "admin"
+    },
+    {
+        "id": 2,
+        "username": "user",
+        "password": "SuperSecretUserPassword",
+        "role": "user"
     }
 ]
