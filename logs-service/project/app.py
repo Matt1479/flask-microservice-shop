@@ -1,7 +1,6 @@
 import os
 from datetime import datetime
 from flask import Flask, jsonify, request
-from project import utils
 from typing import Any
 
 
@@ -13,19 +12,29 @@ LOGS: list[dict[str, Any]] = []
 
 @app.route("/api/logs", methods=["GET", "POST"])
 def logs():
+    user_id = request.headers.get("X-User-Id")
+    user_role = request.headers.get("X-User-Role")
+
+    if not user_id or not user_role:
+        return jsonify({"error": "user id and/or role is required"}), 401
+
+    if user_role != "admin":
+        return jsonify(
+            {"error": "You have insufficient rights to access this resource"}
+        ), 403
+
     if request.method == "POST":
         data = request.get_json(silent=True)
         if data is None:
             return jsonify({"error": "Invalid or missing JSON body"}), 400
         
-        if not data.get("user_id") or not data.get("action"):
-            return jsonify({"error": "Missing required field(s)"}), 400
-        
-        if not utils.validate_int(data.get("user_id")):
-            return jsonify({"error": "user_id must be an integer."}), 400
+        if not data.get("action"):
+            return jsonify({"error": "Missing required field: 'action'"}), 400
         
         data["id"] = max([log["id"] for log in LOGS]) + 1 if LOGS else 1
         data["timestamp"] = datetime.now()
+        data["user_id"] = int(user_id)
+        data["role"] = user_role
         LOGS.append(data)
         return jsonify({"message": "Log added successfully"}), 200
     else:
