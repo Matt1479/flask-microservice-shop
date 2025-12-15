@@ -26,3 +26,7 @@
   margin-top: .125rem;
   margin-left: 1.25rem;
 }
+
+.form-signin {
+  max-width: 330px;
+}

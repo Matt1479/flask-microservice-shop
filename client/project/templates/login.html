@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block main %}
+    <div class="form-signin w-100 m-auto p-1">
+        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+
+        <form action="/login" method="post">
+    
+            <div class="form-floating mb-1">
+                <input class="form-control" id="floatingUsername" name="username"
+                    placeholder="Username" type="text">
+                <label for="floatingUsername">Username</label>
+            </div>
+    
+            <div class="form-floating mb-1">
+                <input class="form-control" id="floatingPassword" name="password"
+                    placeholder="Password" type="password">
+                <label for="floatingPassword">Password</label>
+            </div>
+    
+            <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+    
+        </form>
+    </div>
+{% endblock %}
