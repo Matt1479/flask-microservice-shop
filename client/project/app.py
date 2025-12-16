@@ -77,7 +77,7 @@ def login():
 def logout():
     """Log user out"""
 
-    client.delete(f"{API_ENDPOINTS["auth"]}/login")
+    client.delete(f"{API_ENDPOINTS["auth"]}/logout")
 
     # Clear all cookies (including token)
     client.cookies.clear()
