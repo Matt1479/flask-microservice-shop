@@ -17,6 +17,7 @@ API_ENDPOINTS = {
 # Store sessions on disk
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+app.config["SECRET_KEY"] = os.urandom(24)
 Session(app)
 
 
