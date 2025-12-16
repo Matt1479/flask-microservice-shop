@@ -1,0 +1,4 @@
+/venv
+/project/__pycache__
+flask_session/
+.gitignore
