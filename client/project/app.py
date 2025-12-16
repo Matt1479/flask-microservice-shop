@@ -19,8 +19,6 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-client = requests.Session()
-
 
 @app.route("/")
 def index():
@@ -31,8 +29,8 @@ def index():
 def login():
     """Log user in"""
 
-    # Clear all cookies (including token)
-    client.cookies.clear()
+    # Clear session (token, user)
+    session.clear()
 
     if request.method == "POST":
         username = request.form.get("username")
@@ -46,26 +44,32 @@ def login():
             flash("must provide password", "error")
             return redirect(url_for("login"))
         
-        # Make a POST request to auth service: /login
-        response = client.post(
+        # Make a POST request to /auth/login
+        response = requests.post(
             f"{API_ENDPOINTS["auth"]}/login",
             json={"username": username, "password": password}
         )
-        response_json: dict[str, Any] = response.json()
+        data: dict[str, Any] = response.json()
 
         # If an error occurred (invalid username/password, etc.)
-        if response_json.get("error"):
-            flash(str(response_json.get("error")), category="error")
+        if data.get("error"):
+            flash(str(data.get("error")), category="error")
             return redirect(url_for("login"))
 
-        token = response.cookies.get("token")
-
-        if not token:
+        # Store token in session
+        session["token"] = response.cookies.get("token")
+        if not session.get("token"):
             flash("Could not get token", category="error")
             return redirect(url_for("login"))
         
-        # Set a cookie: token
-        client.cookies.set("token", token)
+        # Store user in session
+        session["user"] = {
+            "id": data["user_id"],
+            "role": data["user_role"]
+        }
+        if not session.get("user"):
+            flash("Could not get user", category="error")
+            return redirect(url_for("login"))
 
         # Redirect to index
         return redirect(url_for("index"))
@@ -77,10 +81,15 @@ def login():
 def logout():
     """Log user out"""
 
-    client.delete(f"{API_ENDPOINTS["auth"]}/logout")
+    if session.get("token"):
+        # Send a DELETE request to /auth/logout
+        requests.delete(
+            f"{API_ENDPOINTS["auth"]}/logout",
+            cookies={"token": session.get("token", None)}
+        )
 
-    # Clear all cookies (including token)
-    client.cookies.clear()
+    # Clear session (token, user)
+    session.clear()
     
     return redirect(url_for("login"))
 
