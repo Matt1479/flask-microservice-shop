@@ -127,5 +127,32 @@ def products():
     )
 
 
+@app.route("/products/delete")
+@token_required
+@admin_required
+def delete_product():
+    id = request.args.get("id")
+    if not id:
+        flash("Product id is required", category="error")
+        return redirect(url_for("products"))
+
+    response = requests.delete(
+        f"{API_ENDPOINTS['shop']}/products/delete/{id}",
+        cookies={"token": session["token"]}
+    )
+
+    if response.status_code == 200:
+        flash(response.json()["message"], category="message")
+    else:
+        flash(response.json()["error"], category="error")
+
+    return redirect(url_for("products"))
+
+
+@app.route("/not-implemented")
+def not_implemented():
+    return "Not Implemented", 501
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=port)
