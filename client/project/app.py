@@ -3,6 +3,7 @@ from typing import Any
 import requests
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_session import Session
+from utils import admin_required, token_required
 
 
 app = Flask(__name__)
@@ -93,6 +94,24 @@ def logout():
     session.clear()
     
     return redirect(url_for("login"))
+
+
+@app.route("/logs")
+@token_required
+@admin_required
+def logs():
+    """Display logs"""
+    try:
+        response_json = requests.get(
+            f"{API_ENDPOINTS['logs']}",
+            # Index into session directly thanks to token_required
+            cookies={"token": session["token"]}
+        ).json()
+        data: list[dict[str, Any]] = response_json.get("data")
+    except requests.exceptions.JSONDecodeError:
+        data = []
+
+    return render_template("logs.html", data=data)
 
 
 if __name__ == "__main__":

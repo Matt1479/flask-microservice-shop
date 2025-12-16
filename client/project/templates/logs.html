@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Logs
+{% endblock %}
+
+{% block main %}
+
+    {% if data %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Action</th>
+                    <th scope="col">User ID</th>
+                    <th scope="col">User Role</th>
+                    <th scope="col">Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in data %}
+                    <tr>
+                        <th scope="row">{{ log.get("id") }}</th>
+                        <td>{{ log.get("action") }}</td>
+                        <td>{{ log.get("user_id") }}</td>
+                        <td>{{ log.get("user_role") }}</td>
+                        <td>{{ log.get("timestamp") }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No logs yet.</p>
+    {% endif %}
+
+{% endblock %}
