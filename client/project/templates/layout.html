@@ -21,7 +21,7 @@
         <aside class="border-end">
             <div class="flex-shrink-0 p-3" style="width: 280px;">
 
-                <a href="/"
+                <a href="{{ url_for('index') }}"
                     class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
                     <svg class="bi pe-none me-2" width="30" height="24" aria-hidden="true">
                         <use xlink:href="#bootstrap"></use>
@@ -42,12 +42,12 @@
 
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                 <li>
-                                    <a href="/products/add" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                                    <a href="{{ url_for('add_product') }}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                                         Add
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/products" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                                    <a href="{{ url_for('get_products') }}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                                         View
                                     </a>
                                 </li>
@@ -70,12 +70,12 @@
 
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                 <li>
-                                    <a href="/login" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                                    <a href="{{ url_for('login') }}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                                         Login
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/logout" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                                    <a href="{{ url_for('logout') }}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                                         Logout
                                     </a>
                                 </li>
