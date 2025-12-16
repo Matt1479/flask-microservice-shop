@@ -86,7 +86,7 @@ def logout():
         # Send a DELETE request to /auth/logout
         requests.delete(
             f"{API_ENDPOINTS["auth"]}/logout",
-            cookies={"token": session.get("token", None)}
+            cookies={"token": session["token"]}
         )
 
     # Clear session (token, user)
