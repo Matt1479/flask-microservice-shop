@@ -101,17 +101,30 @@ def logout():
 @admin_required
 def logs():
     """Display logs"""
-    try:
-        response_json = requests.get(
-            f"{API_ENDPOINTS['logs']}",
-            # Index into session directly thanks to token_required
-            cookies={"token": session["token"]}
-        ).json()
-        data: list[dict[str, Any]] = response_json.get("data")
-    except requests.exceptions.JSONDecodeError:
-        data = []
+    response = requests.get(
+        f"{API_ENDPOINTS['logs']}",
+        # Index into session directly thanks to token_required
+        cookies={"token": session["token"]}
+    )
 
-    return render_template("logs.html", data=data)
+    return render_template(
+        "logs.html",
+        data=response.json().get("data") if response.status_code == 200 else []
+    )
+
+
+@app.route("/products")
+@token_required
+def products():
+    response = requests.get(
+        f"{API_ENDPOINTS['shop']}/products",
+        cookies={"token": session["token"]}
+    )
+
+    return render_template(
+        "products.html",
+        data=response.json().get("data") if response.status_code == 200 else []
+    )
 
 
 if __name__ == "__main__":
