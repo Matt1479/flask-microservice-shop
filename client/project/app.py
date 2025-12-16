@@ -113,18 +113,38 @@ def logs():
     )
 
 
-@app.route("/products")
+@app.route("/products/add", methods=["GET", "POST"])
 @token_required
-def products():
-    response = requests.get(
-        f"{API_ENDPOINTS['shop']}/products",
-        cookies={"token": session["token"]}
-    )
+@admin_required
+def add_product():
+    if request.method == "POST":
+        payload = {
+            "title": request.form.get("title"),
+            "description": request.form.get("description"),
+            "category": request.form.get("category"),
+            "price": request.form.get("price"),
+            "stock": request.form.get("stock")
+        }
+        for key in payload:
+            if not payload.get(key):
+                flash(f"{key} is required", category="error")
+                return redirect(url_for("add_product"))
+        
+        response = requests.post(
+            f"{API_ENDPOINTS['shop']}/products/add",
+            json=payload,
+            cookies={"token": session["token"]}
+        )
 
-    return render_template(
-        "products.html",
-        data=response.json().get("data") if response.status_code == 200 else []
-    )
+        if response.status_code != 200:
+            flash(response.json()["error"], category="error")
+            return redirect(url_for("add_product"))
+
+        flash(response.json()["message"], category="message")
+        return redirect(url_for("get_products"))
+
+    else:
+        return render_template("add-product.html")
 
 
 @app.route("/products/delete")
@@ -134,7 +154,7 @@ def delete_product():
     id = request.args.get("id")
     if not id:
         flash("Product id is required", category="error")
-        return redirect(url_for("products"))
+        return redirect(url_for("get_products"))
 
     response = requests.delete(
         f"{API_ENDPOINTS['shop']}/products/delete/{id}",
@@ -146,7 +166,21 @@ def delete_product():
     else:
         flash(response.json()["error"], category="error")
 
-    return redirect(url_for("products"))
+    return redirect(url_for("get_products"))
+
+
+@app.route("/products")
+@token_required
+def get_products():
+    response = requests.get(
+        f"{API_ENDPOINTS['shop']}/products",
+        cookies={"token": session["token"]}
+    )
+
+    return render_template(
+        "products.html",
+        data=response.json().get("data") if response.status_code == 200 else []
+    )
 
 
 @app.route("/not-implemented")
