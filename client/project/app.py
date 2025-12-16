@@ -7,8 +7,8 @@ from utils import admin_required, create_log, token_required
 
 
 app = Flask(__name__)
-port = int(os.environ.get("PORT", 5000))
-BASE_API_URL = f"http://localhost:{port}/api"
+port = int(os.environ.get("PORT", 3000))
+BASE_API_URL = os.environ.get("BASE_API_URL", "http://gateway:5000/api")
 API_ENDPOINTS = {
     "auth": BASE_API_URL + "/auth",
     "logs": BASE_API_URL + "/logs",
@@ -47,7 +47,7 @@ def login():
         
         # Make a POST request to /auth/login
         response = requests.post(
-            f"{API_ENDPOINTS["auth"]}/login",
+            f"{API_ENDPOINTS['auth']}/login",
             json={"username": username, "password": password}
         )
         data: dict[str, Any] = response.json()
@@ -92,7 +92,7 @@ def logout():
     if session.get("token"):
         # Send a DELETE request to /auth/logout
         requests.delete(
-            f"{API_ENDPOINTS["auth"]}/logout",
+            f"{API_ENDPOINTS['auth']}/logout",
             cookies={"token": session["token"]}
         )
 
