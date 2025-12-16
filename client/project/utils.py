@@ -1,6 +1,9 @@
-from flask import redirect, session, url_for
+from flask import flash, redirect, session, url_for
 from functools import wraps
 from typing import Any
+from urllib.parse import urlencode
+
+import requests
 
 
 def token_required(f):
@@ -37,3 +40,28 @@ def admin_required(f):
         return f(*args, **kwargs)
     
     return decorated
+
+
+def create_log(url: str, token: str, method: str | None, endpoint: str | None, *params):
+    query_params = {}
+    for arg in params:
+        if isinstance(arg, dict):
+            query_params.update(arg)
+
+    query_string = urlencode(query_params)
+
+    action = f"{method} /{endpoint}"
+    if query_string:
+        action += f"?{query_string}"
+
+    response = requests.post(
+        url,
+        json={"action": action},
+        cookies={"token": token}
+    )
+
+    if response.status_code != 200:
+        flash("Could not create a log", category="error")
+        return False
+    
+    return True

@@ -3,7 +3,7 @@ from typing import Any
 import requests
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_session import Session
-from utils import admin_required, token_required
+from utils import admin_required, create_log, token_required
 
 
 app = Flask(__name__)
@@ -30,11 +30,10 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
-
-    # Clear session (token, user)
-    session.clear()
-
     if request.method == "POST":
+        # Clear session (token, user)
+        session.clear()
+
         username = request.form.get("username")
         password = request.form.get("password")
 
@@ -72,6 +71,13 @@ def login():
         if not session.get("user"):
             flash("Could not get user", category="error")
             return redirect(url_for("login"))
+        
+        create_log(
+            API_ENDPOINTS["logs"],
+            session["token"],
+            request.method,
+            request.endpoint
+        )
 
         # Redirect to index
         return redirect(url_for("index"))
@@ -88,6 +94,13 @@ def logout():
         requests.delete(
             f"{API_ENDPOINTS["auth"]}/logout",
             cookies={"token": session["token"]}
+        )
+
+        create_log(
+            API_ENDPOINTS["logs"],
+            session["token"],
+            request.method,
+            request.endpoint
         )
 
     # Clear session (token, user)
@@ -140,6 +153,15 @@ def add_product():
             flash(response.json()["error"], category="error")
             return redirect(url_for("add_product"))
 
+        create_log(
+            API_ENDPOINTS["logs"],
+            session["token"],
+            request.method,
+            request.endpoint,
+            request.args,
+            request.form
+        )
+
         flash(response.json()["message"], category="message")
         return redirect(url_for("get_products"))
 
@@ -161,11 +183,19 @@ def delete_product():
         cookies={"token": session["token"]}
     )
 
-    if response.status_code == 200:
-        flash(response.json()["message"], category="message")
-    else:
+    if response.status_code != 200:
         flash(response.json()["error"], category="error")
 
+    create_log(
+        API_ENDPOINTS["logs"],
+        session["token"],
+        request.method,
+        request.endpoint,
+        request.args,
+        request.form
+    )
+
+    flash(response.json()["message"], category="message")
     return redirect(url_for("get_products"))
 
 
@@ -210,6 +240,15 @@ def update_product():
         if response.status_code != 200:
             flash(response.json()["error"], category="error")
             return redirect(url_for("update_product"))
+        
+        create_log(
+            API_ENDPOINTS["logs"],
+            session["token"],
+            request.method,
+            request.endpoint,
+            request.args,
+            request.form
+        )
 
         flash(response.json()["message"], category="message")
         return redirect(url_for("get_products"))
