@@ -27,6 +27,11 @@
   margin-left: 1.25rem;
 }
 
+.card:hover {
+    transform: translateY(-1px);
+    box-shadow: 4px 4px 5px rgba(0,0,0,0.1);
+}
+
 .form-signin {
   max-width: 330px;
 }

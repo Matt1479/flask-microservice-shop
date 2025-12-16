@@ -1,9 +1,37 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Home
+    Dashboard
 {% endblock %}
 
 {% block main %}
-    <p>Hello, index!</p>
+<h1 class="text-center mb-3">Dashboard</h1>
+
+<div class="row">
+    <div class="col-sm-6 mb-3 mb-sm-0">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Products</h5>
+                {% if session.get("user") %}
+                    {% if session.get("user").get("role") == "admin" %}
+                        <a href="{{ url_for('add_product') }}" class="card-link">Add</a>
+                    {% endif %}
+                {% endif %}
+                <a href="{{ url_for('get_products') }}" class="card-link">View</a>
+            </div>
+        </div>
+    </div>
+    {% if session.get("user") %}
+        {% if session.get("user").get("role") == "admin" %}
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Logs</h5>
+                        <a href="{{ url_for('logs') }}" class="card-link">View</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
 {% endblock %}
