@@ -41,11 +41,15 @@
                         <div class="collapse" id="products-collapse">
 
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                <li>
-                                    <a href="{{ url_for('add_product') }}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                                        Add
-                                    </a>
-                                </li>
+                                {% if session.get("user") %}
+                                    {% if session.get("user").get("role") == "admin" %}
+                                        <li>
+                                            <a href="{{ url_for('add_product') }}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                                                Add
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endif %}
                                 <li>
                                     <a href="{{ url_for('get_products') }}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                                         View
@@ -56,6 +60,31 @@
                         </div>
 
                     </li>
+
+                    {% if session.get("user") %}
+                        {% if session.get("user").get("role") == "admin" %}
+                            <li class="mb-1">
+        
+                                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                                    data-bs-toggle="collapse" data-bs-target="#logs-collapse" aria-expanded="false">
+                                    Logs
+                                </button>
+        
+                                <div class="collapse" id="logs-collapse">
+        
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                        <li>
+                                            <a href="{{ url_for('logs') }}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                                                View
+                                            </a>
+                                        </li>
+                                    </ul>
+        
+                                </div>
+        
+                            </li>
+                        {% endif %}
+                    {% endif %}
 
                     <li class="border-top my-3"></li>
 

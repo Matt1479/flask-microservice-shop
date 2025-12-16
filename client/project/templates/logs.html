@@ -21,7 +21,7 @@
                 {% for log in data %}
                     <tr>
                         <th scope="row">{{ log.get("id") }}</th>
-                        <td>{{ log.get("action") }}</td>
+                        <td class="text-break">{{ log.get("action") }}</td>
                         <td>{{ log.get("user_id") }}</td>
                         <td>{{ log.get("user_role") }}</td>
                         <td>{{ log.get("timestamp") }}</td>
