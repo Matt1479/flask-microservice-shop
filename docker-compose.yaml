@@ -1,6 +1,8 @@
 services:
   client:
     build: ./client
+    environment:
+      - BASE_API_URL=http://gateway:5000/api
     ports:
       - "3000:3000"
     depends_on:
