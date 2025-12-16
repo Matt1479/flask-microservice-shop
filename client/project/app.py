@@ -183,6 +183,54 @@ def get_products():
     )
 
 
+@app.route("/products/update", methods=["GET", "POST"])
+@token_required
+@admin_required
+def update_product():
+    if request.method == "POST":
+        payload = {
+            "id": request.form.get("id"),
+            "title": request.form.get("title"),
+            "description": request.form.get("description"),
+            "category": request.form.get("category"),
+            "price": request.form.get("price"),
+            "stock": request.form.get("stock")
+        }
+        for key in payload:
+            if not payload.get(key):
+                flash(f"{key} is required", category="error")
+                return redirect(url_for("update_product"))
+        
+        response = requests.put(
+            f"{API_ENDPOINTS['shop']}/products/update",
+            json=payload,
+            cookies={"token": session["token"]}
+        )
+
+        if response.status_code != 200:
+            flash(response.json()["error"], category="error")
+            return redirect(url_for("update_product"))
+
+        flash(response.json()["message"], category="message")
+        return redirect(url_for("get_products"))
+
+    else:
+        id = request.args.get("id")
+        if not id:
+            flash("Product id is required", category="error")
+            return redirect(url_for("get_products"))
+
+        response = requests.get(
+            f"{API_ENDPOINTS['shop']}/products/{id}",
+            cookies={"token": session["token"]}
+        )
+
+        if response.status_code != 200:
+            flash(response.json()["error"], category="error")
+
+        return render_template("update-product.html", data=response.json().get("data"), id=id)
+
+
 @app.route("/not-implemented")
 def not_implemented():
     return "Not Implemented", 501

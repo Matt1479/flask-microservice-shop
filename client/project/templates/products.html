@@ -33,7 +33,7 @@
                             {% if session.get("user").get("role") == "admin" %}
                                 <td>
                                     <a class="btn btn-warning"
-                                        href="{{ url_for('not_implemented') }}" role="button">
+                                        href="{{ url_for('update_product', id=product.get('id')) }}" role="button">
                                         Edit
                                     </a>
                                 </td>
