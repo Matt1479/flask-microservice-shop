@@ -76,6 +76,7 @@ def gateway(path: str):
             headers=forward_headers,
             params=dict(request.args),
             json=request.get_json(silent=True),
+            cookies=request.cookies,
             timeout=1
         )
 
@@ -83,7 +84,7 @@ def gateway(path: str):
         for key, value in upstream.headers.items():
             response.headers[key] = value
 
-        return response, 200
+        return response, response.status_code
 
     except requests.exceptions.RequestException as e:
         return jsonify({"error": "Service unreachable", "details": str(e)}), 502
