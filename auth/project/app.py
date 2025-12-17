@@ -36,10 +36,21 @@ def login():
                 app.config["SECRET_KEY"],
                 algorithm="HS256",
             )
-            response = make_response(jsonify({"message": "Authentication successful"}))
+            response = make_response(jsonify({
+                "message": "Authentication successful",
+                "user_id": user["id"],
+                "user_role": user["role"]
+            }))
             response.set_cookie("token", token)
             return response, 200
     return jsonify({"error": "Invalid username or password"}), 401
+
+
+@app.route("/api/auth/logout", methods=["DELETE"])
+def logout():
+    response = make_response(jsonify({"message": "Logout successful"}))
+    response.delete_cookie("token")
+    return response, 200
 
 
 if __name__ == "__main__":
