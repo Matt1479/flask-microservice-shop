@@ -16,8 +16,8 @@ services:
       - "5000:5000"
     depends_on:
       - auth
-      - shop
       - logs
+      - products
     environment:
       - SECRET_KEY=${SECRET_KEY}
     networks:
@@ -30,13 +30,13 @@ services:
     networks:
       - internal
   
-  shop:
-    build: ./shop
+  logs:
+    build: ./logs
     networks:
       - internal
   
-  logs:
-    build: ./logs
+  products:
+    build: ./products
     networks:
       - internal
 

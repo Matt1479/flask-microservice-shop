@@ -4,16 +4,20 @@ from functools import wraps
 from typing import Any
 
 
-def validate_int(value):
+def validate_pos_int(value):
     try:
-        return int(value)
+        value = int(value)
+        if value > 0:
+            return value
     except ValueError:
         return False
 
 
-def validate_float(value):
+def validate_pos_float(value):
     try:
-        return float(value)
+        value = float(value)
+        if value > 0:
+            return value
     except ValueError:
         return False
 

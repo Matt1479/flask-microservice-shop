@@ -59,7 +59,7 @@ def create_log(url: str, token: str, method: str, endpoint: str | None, params: 
 
     if response.status_code != 200:
         flash(
-            f"Could not create a log (reason: {response.json().get("error")})",
+            f"Could not create a log (reason: {response.json().get('error')})",
             category="error",
         )
         return False

@@ -12,7 +12,7 @@ BASE_API_URL = os.environ.get("BASE_API_URL", "http://gateway:5000/api")
 API_ENDPOINTS = {
     "auth": BASE_API_URL + "/auth",
     "logs": BASE_API_URL + "/logs",
-    "shop": BASE_API_URL + "/shop"
+    "products": BASE_API_URL + "/products"
 }
 
 # Store sessions on disk
@@ -144,7 +144,7 @@ def add_product():
                 return redirect(url_for("add_product"))
         
         response = requests.post(
-            f"{API_ENDPOINTS['shop']}/products/add",
+            f"{API_ENDPOINTS['products']}/add",
             json=payload,
             cookies={"token": session["token"]}
         )
@@ -178,7 +178,7 @@ def delete_product():
         return redirect(url_for("get_products"))
 
     response = requests.delete(
-        f"{API_ENDPOINTS['shop']}/products/delete/{id}",
+        f"{API_ENDPOINTS['products']}/delete/{id}",
         cookies={"token": session["token"]}
     )
 
@@ -201,7 +201,7 @@ def delete_product():
 @token_required
 def get_products():
     response = requests.get(
-        f"{API_ENDPOINTS['shop']}/products",
+        API_ENDPOINTS["products"],
         cookies={"token": session["token"]}
     )
 
@@ -230,7 +230,7 @@ def update_product():
                 return redirect(url_for("update_product"))
         
         response = requests.put(
-            f"{API_ENDPOINTS['shop']}/products/update",
+            f"{API_ENDPOINTS['products']}/update",
             json=payload,
             cookies={"token": session["token"]}
         )
@@ -257,7 +257,7 @@ def update_product():
             return redirect(url_for("get_products"))
 
         response = requests.get(
-            f"{API_ENDPOINTS['shop']}/products/{id}",
+            f"{API_ENDPOINTS['products']}/{id}",
             cookies={"token": session["token"]}
         )
 

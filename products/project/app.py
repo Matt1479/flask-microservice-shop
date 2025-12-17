@@ -10,19 +10,14 @@ port = int(os.environ.get("PORT", 5002))
 PRODUCTS: list[dict[str, Any]] = utils.init_products()
 
 
-@app.route("/api/shop")
-def shop():
-    return jsonify({"message": "Hello, this is Shop Service"}), 200
-
-
-@app.route("/api/shop/products", methods=["GET"])
+@app.route("/api/products", methods=["GET"])
 def get_products():
     return jsonify({"data": PRODUCTS}), 200 if PRODUCTS else 204
 
 
-@app.route("/api/shop/products/<id>", methods=["GET"])
+@app.route("/api/products/<id>", methods=["GET"])
 def get_product(id: int):
-    if not utils.validate_int(id):
+    if not utils.validate_pos_int(id):
         return jsonify({"error": "id must be an integer"}), 400
     id = int(id)
 
@@ -32,7 +27,7 @@ def get_product(id: int):
     return jsonify({"error": f"Product of id {id} is not found."}), 404
 
 
-@app.route("/api/shop/products/add", methods=["POST"])
+@app.route("/api/products/add", methods=["POST"])
 @utils.user_id_admin_role_required
 def add_product():
     data = request.get_json(silent=True)
@@ -48,21 +43,21 @@ def add_product():
     ):
         return jsonify({"error": "Missing required field(s)"}), 400
 
-    if not utils.validate_float(data["price"]):
-        return jsonify({"error": "Price must be a real number"}), 400
+    if not utils.validate_pos_float(data["price"]):
+        return jsonify({"error": "Price must be a positive real number"}), 400
     
-    if not utils.validate_int(data["stock"]):
-        return jsonify({"error": "Stock must be an integer"}), 400
+    if not utils.validate_pos_int(data["stock"]):
+        return jsonify({"error": "Stock must be a positive integer"}), 400
     
     data["id"] = max([product["id"] for product in PRODUCTS]) + 1 if PRODUCTS else 1
     PRODUCTS.append(data)
     return jsonify({"message": "Product added successfully"}), 200
 
 
-@app.route("/api/shop/products/delete/<id>", methods=["DELETE"])
+@app.route("/api/products/delete/<id>", methods=["DELETE"])
 @utils.user_id_admin_role_required
 def delete_product(id: int):
-    if not utils.validate_int(id):
+    if not utils.validate_pos_int(id):
         return jsonify({"error": "id must be an integer"}), 400
     id = int(id)
 
@@ -73,15 +68,17 @@ def delete_product(id: int):
     return jsonify({"error": f"Product of id {id} is not found."}), 404
 
 
-@app.route("/api/shop/products/update", methods=["PUT"])
+@app.route("/api/products/update", methods=["PUT"])
 @utils.user_id_admin_role_required
 def update_product():
     data = request.get_json(silent=True)
     if data is None:
         return jsonify({"error": "Invalid or missing JSON body"}), 400
     
-    if not utils.validate_int(data["id"]):
-        return jsonify({"error": "id must be an integer"}), 400
+    if not utils.validate_pos_int(data["id"]):
+        return jsonify({"error": "id must be a positive integer"}), 400
+    
+    data["id"] = int(data["id"])
 
     for product in PRODUCTS:
         if product["id"] == data["id"]:

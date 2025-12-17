@@ -10,7 +10,7 @@ port = int(os.environ.get("PORT", 5000))
 
 SERVICE_ROUTES = {
     "/api/auth": "http://auth:5001",
-    "/api/shop": "http://shop:5002",
+    "/api/products": "http://products:5002",
     "/api/logs": "http://logs:5003"
 }
 PUBLIC_ROUTES = [
