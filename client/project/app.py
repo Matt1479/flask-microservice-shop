@@ -73,10 +73,10 @@ def login():
             return redirect(url_for("login"))
         
         create_log(
-            API_ENDPOINTS["logs"],
-            session["token"],
-            request.method,
-            request.endpoint
+            url=API_ENDPOINTS["logs"],
+            token=session["token"],
+            method=request.method,
+            endpoint=request.endpoint
         )
 
         # Redirect to index
@@ -97,10 +97,10 @@ def logout():
         )
 
         create_log(
-            API_ENDPOINTS["logs"],
-            session["token"],
-            request.method,
-            request.endpoint
+            url=API_ENDPOINTS["logs"],
+            token=session["token"],
+            method=request.method,
+            endpoint=request.endpoint
         )
 
     # Clear session (token, user)
@@ -154,12 +154,11 @@ def add_product():
             return redirect(url_for("add_product"))
 
         create_log(
-            API_ENDPOINTS["logs"],
-            session["token"],
-            request.method,
-            request.endpoint,
-            request.args,
-            request.form
+            url=API_ENDPOINTS["logs"],
+            token=session["token"],
+            method=request.method,
+            endpoint=request.endpoint,
+            params=[request.args, request.form]
         )
 
         flash(response.json()["message"], category="message")
@@ -187,12 +186,11 @@ def delete_product():
         flash(response.json()["error"], category="error")
 
     create_log(
-        API_ENDPOINTS["logs"],
-        session["token"],
-        request.method,
-        request.endpoint,
-        request.args,
-        request.form
+        url=API_ENDPOINTS["logs"],
+        token=session["token"],
+        method=request.method,
+        endpoint=request.endpoint,
+        params=[request.args, request.form]
     )
 
     flash(response.json()["message"], category="message")
@@ -242,12 +240,11 @@ def update_product():
             return redirect(url_for("update_product"))
         
         create_log(
-            API_ENDPOINTS["logs"],
-            session["token"],
-            request.method,
-            request.endpoint,
-            request.args,
-            request.form
+            url=API_ENDPOINTS["logs"],
+            token=session["token"],
+            method=request.method,
+            endpoint=request.endpoint,
+            params=[request.args, request.form]
         )
 
         flash(response.json()["message"], category="message")

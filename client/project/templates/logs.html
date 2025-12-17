@@ -11,9 +11,11 @@
             <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Action</th>
                     <th scope="col">User ID</th>
                     <th scope="col">User Role</th>
+                    <th scope="col">Method</th>
+                    <th scope="col">Endpoint</th>
+                    <th scope="col">Payload</th>
                     <th scope="col">Timestamp</th>
                 </tr>
             </thead>
@@ -21,10 +23,12 @@
                 {% for log in data %}
                     <tr>
                         <th scope="row">{{ log.get("id") }}</th>
-                        <td class="text-break">{{ log.get("action") }}</td>
                         <td>{{ log.get("user_id") }}</td>
                         <td>{{ log.get("user_role") }}</td>
-                        <td>{{ log.get("timestamp") }}</td>
+                        <td>{{ log.get("method") }}</td>
+                        <td>/{{ log.get("endpoint") }}</td>
+                        <td class="text-break">{{ log.get("payload") or "-" }}</td>
+                        <td class="text-break">{{ log.get("timestamp") }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

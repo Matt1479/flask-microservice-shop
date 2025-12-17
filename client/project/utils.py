@@ -1,7 +1,6 @@
 from flask import flash, redirect, session, url_for
 from functools import wraps
 from typing import Any
-from urllib.parse import urlencode
 
 import requests
 
@@ -42,26 +41,27 @@ def admin_required(f):
     return decorated
 
 
-def create_log(url: str, token: str, method: str | None, endpoint: str | None, *params):
-    query_params = {}
-    for arg in params:
-        if isinstance(arg, dict):
-            query_params.update(arg)
-
-    query_string = urlencode(query_params)
-
-    action = f"{method} /{endpoint}"
-    if query_string:
-        action += f"?{query_string}"
+def create_log(url: str, token: str, method: str, endpoint: str | None, params: list=[]):
+    payload = {}
+    for param in params:
+        if isinstance(param, dict):
+            payload.update(param)
 
     response = requests.post(
         url,
-        json={"action": action},
+        json={
+            "method": method,
+            "endpoint": endpoint,
+            "payload": payload
+        },
         cookies={"token": token}
     )
 
     if response.status_code != 200:
-        flash("Could not create a log", category="error")
+        flash(
+            f"Could not create a log (reason: {response.json().get("error")})",
+            category="error",
+        )
         return False
     
     return True
