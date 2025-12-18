@@ -15,6 +15,7 @@ The goal of this project was to better understand **microservices**, **API gatew
 - [Project Structure](#project-structure)
 - [Ports](#ports)
 - [Setup & Run](#setup--run)
+- [Examples (Screenshots)](#examples-screenshots)
 - [API Overview](#api-overview)
 - [Security & Authentication](#security--authentication)
 - [References](#references)
@@ -190,6 +191,38 @@ docker-compose up --build
 After startup:
 - Client: http://localhost:3000
 - Gateway: http://localhost:5000
+
+## Examples (Screenshots)
+
+### User Routes
+
+<details>
+<summary>Show Example</summary>
+
+<img src="./screenshots/0.login-user.png">
+<img src="./screenshots/1.dashboard-user.png">
+<img src="./screenshots/2.products-sidebar-user.png">
+
+</details>
+
+### Admin Routes
+
+<details>
+<summary>Show Example</summary>
+
+<img src="./screenshots/3.dashboard-sidebar-admin.png">
+<img src="./screenshots/4.products-admin.png">
+<img src="./screenshots/5.edit-product.png">
+<img src="./screenshots/6.edit-product.png">
+<img src="./screenshots/7.products.png">
+<img src="./screenshots/8.products.png">
+<img src="./screenshots/9.delete-product.png">
+<img src="./screenshots/10.add-product.png">
+<img src="./screenshots/11.products.png">
+<img src="./screenshots/12.products.png">
+<img src="./screenshots/13.logs.png">
+
+</details>
 
 ## API Overview
 
