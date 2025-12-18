@@ -182,6 +182,10 @@ SECRET_KEY=your-secret-key
 - It should be a sufficiently long (e.g. 24+ characters), random string
 - The same value is shared between the API gateway and auth service
 
+### Test Accounts
+
+The credentials for user and admin accounts are in [users.json](./auth/project/users.json) file.
+
 ### Build & Run
 
 ```bash
